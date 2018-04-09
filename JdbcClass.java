@@ -63,6 +63,19 @@ public class JdbcClass {
         }
         return false;
     }
+    public int getUserId(String email) throws SQLException{
+        	String queryCheck = "SELECT u.email, u.user_id " +
+                "FROM User u " +
+                "WHERE u.email=?";
+        	PreparedStatement ps = conn.prepareStatement(queryCheck);
+        	ps.setString(1,email);
+        	ResultSet rs = ps.executeQuery();
+        	int userid = 0;
+        	if(rs.next()) {
+        		userid = rs.getInt("user_id");
+        	}
+        	return userid;
+    }
     public void registerStudent(String firstname, String lastname, String username, String password, String email)
             throws SQLException{
         int type = 1;
