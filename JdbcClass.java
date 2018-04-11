@@ -11,7 +11,7 @@ public class JdbcClass {
     public JdbcClass() {
         try {
             Class.forName(driverName);
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/201FinalProject?user=root&password=1304kenya&useSSL=false");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/201FinalProject?user=root&password=&useSSL=false");
         } catch (SQLException sqle) {
             System.out.println("sqle: " + sqle.getMessage());
         } catch (ClassNotFoundException cnfe) {//if we cannot find from the driver
