@@ -1,0 +1,130 @@
+body, html
+{
+    padding: 0px;
+    margin: 0px;
+}
+#header {
+    width:100%;
+    height:100px;
+    background-color:#85C7B6;
+}
+
+i {
+    position:relative;
+    left:1150px;
+    top:-35px;
+}
+#touxiang {
+    position:relative;
+    left:850px;
+    top:-20px;
+    height:80px;
+}
+a{
+    position:relative;
+    left:1150px;
+    top:-45px;
+    height:80px;
+    color:white;
+    font-family: 'Shadows Into Light',cursive;
+}
+#left{
+    border-style: hidden solid hidden hidden;
+    border-color: darkgrey;
+    width: 30%;
+    float: left;
+    overflow-y: scroll;
+}
+#postsearch{
+    width: 100%;
+    float: left;
+}
+.collapsible{
+    width: 100%;
+    float: left;
+    left:0%;
+    height:30px;
+}
+.block{
+    left:0%;
+    height:100px;
+    float: left;
+    border-style:solid;
+    border-top-color:rgb(239,239,239);
+    border-right-color:rgb(239,239,239);
+    border-left-color:rgb(239,239,239);
+    border-bottom-color:rgb(226,226,226);
+    background-color: rgb(255,255,255);
+}
+#right{
+    width: 69.5%;
+    float: left;
+    overflow-y: scroll;
+}
+.collapsibleopen {
+    background-color: #777;
+    color: white;
+    cursor: pointer;
+    padding: 18px;
+    width: 100%;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 15px;
+}
+.active, .collapsible:hover {
+}
+.collapsible{
+
+    border:none;
+}
+.content {
+    display: block;
+}
+.content1{
+    display: none;
+}
+#left{
+    width:35%;
+    margin: 2.5%;
+    float:left;
+    border-right: 1px salmon solid;
+    height:100%;
+}
+#right{
+    width: 55%;
+    float:left;
+    margin: 2%;
+}
+
+#postbutton{
+    background-color: #3498DB;
+    color: white;
+    padding: 16px;
+    font-size: 16px;
+    border: none;
+}
+
+.enjoy-css{
+    display: inline-block;
+    -webkit-box-sizing: content-box;
+    -moz-box-sizing: content-box;
+    box-sizing: content-box;
+    padding: 22px 20px 10px;
+    border: 1px solid #b7b7b7;
+    -webkit-border-radius: 8px;
+    border-radius: 8px;
+    font: normal 26px/normal "Times New Roman", Times, serif;
+    color: rgba(81,85,86,1);
+    -o-text-overflow: clip;
+    text-overflow: clip;
+    background: rgba(214,207,207,1);
+    height: 8px;
+}
+label{
+    font-family: 'Montserrat', sans-serif;
+}
+h2{
+
+    font-family: 'Open Sans', sans-serif;
+}
