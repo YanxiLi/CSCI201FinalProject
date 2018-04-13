@@ -1,3 +1,5 @@
+package users;
+
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -10,7 +12,7 @@ public class Question {
     private int senderId;
     private int category_id;
     private List<Integer> answersId;
-    public Question(int id, String title, int senderId, String content, int courseId, LocalDateTime time, int category) {
+    public Question(int id, String title, int senderId, String content, LocalDateTime time, int category) {
         this.id = id;
         this.senderId = senderId;
         this.title = title;
@@ -62,3 +64,4 @@ public class Question {
     }
 
 }
+
