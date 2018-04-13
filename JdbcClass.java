@@ -11,7 +11,7 @@ public class JdbcClass {
     public JdbcClass() {
         try {
             Class.forName(driverName);
-            conn = DriverManager.getConnection("jdbc:mysql://localhost/201FinalProject?user=root&password=&useSSL=false");
+            conn = DriverManager.getConnection("jdbc:mysql://localhost/201FinalProject?user=root&password=1304kenya&useSSL=false");
         } catch (SQLException sqle) {
             System.out.println("sqle: " + sqle.getMessage());
         } catch (ClassNotFoundException cnfe) {//if we cannot find from the driver
@@ -74,6 +74,7 @@ public class JdbcClass {
         }
         return userid;
     }
+
     public void registerStudent(String firstname, String lastname, String username, String password, String email)
             throws SQLException{
         int type = 1;
@@ -198,6 +199,22 @@ public class JdbcClass {
         int courseid = courselist.get(index);
         return courseid;
     }
+    public Boolean ifUserCanPostAnnouncement(int userid, int courseid)
+            throws SQLException{
+        String queryCheck = "SELECT cu.user_id, cu.course_id" +
+                " From Course_user cu" +
+                " Where cu.user_id=?"
+                + " AND cu.course_id=?" +
+                " AND cu.coursetype=2";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ps.setInt(2, courseid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()){
+            return true;
+        }
+        return false;
+    }
     public List<Announcement> getAnnouncementListForCourse(int courseid)
             throws SQLException{
         List<Announcement> announcementlist = new ArrayList<Announcement>();
@@ -296,7 +313,7 @@ public class JdbcClass {
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             Question q = new Question(rs.getInt("question_id"),rs.getString("title"),
-                    rs.getInt("user_asking_id"), rs.getString("content"), courseid, rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
+                    rs.getInt("user_asking_id"), rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
             queryCheck = "SELECT p.question_id, a.answer_id" +
                     " From Post p, Answer a" +
                     " Where p.question_id=?"
@@ -310,6 +327,43 @@ public class JdbcClass {
             questionlist.add(q);
         }
         return questionlist;
+    }
+    public List<Integer> getTenQuestions(int count)//start from 0
+            throws SQLException{
+        List<Integer> questionlist = new ArrayList<Integer>();
+        String queryCheck = "SELECT *" +
+                " From Question q" +
+                " limit ?,?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1,(count*10+1));
+        ps.setInt(2,(count+1)*10);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            questionlist.add(rs.getInt("question_id"));
+        }
+        return questionlist;
+    }
+    public Question getQuestion(int questionid)
+            throws SQLException{
+        String queryCheck = "SELECT *" +
+                " From Question q" +
+                " Where p.course_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, questionid);
+        ResultSet rs = ps.executeQuery();
+        Question q = new Question(rs.getInt("question_id"),rs.getString("title"),
+                rs.getInt("user_asking_id"),rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
+        queryCheck = "SELECT p.question_id, a.answer_id" +
+                " From Post p, Answer a" +
+                " Where p.question_id=?"
+                + " p.post_id=a.related_post_id";
+        PreparedStatement ps2 = conn.prepareStatement(queryCheck);
+        ps2.setInt(1, questionid);
+        ResultSet rs2 = ps.executeQuery();
+        while(rs2.next()){
+            q.getanswersId().add(rs2.getInt("answer_id"));
+        }
+        return q;
     }
     public String getQuestionCategory(int questionid)
             throws SQLException {
