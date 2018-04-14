@@ -1,3 +1,5 @@
+package users;
+
 public class Post {
     private int id;
     private int question_id;

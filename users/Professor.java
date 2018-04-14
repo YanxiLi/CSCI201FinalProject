@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Professor extends User{
-    private List<Integer> coursesTeachingId = new ArrayList<Integer>();
+    private List<Integer> courseTeachingId = new ArrayList<Integer>();
     private List<Integer> announcementMadeId = new ArrayList<Integer>();
+    /*
     public Professor(String username, int Id, List<Integer> courseteaching){
         super(username,Id);
         this.coursesTeachingId = courseteaching;
-    }
-    public List<Integer> getCoursesTeachingId() {
-        return coursesTeachingId;
+    }*/
+    public List<Integer> getCourseTeachingId() {
+        return courseTeachingId;
     }
     public List<Integer> getAnnouncementMadeId() {
         return announcementMadeId;

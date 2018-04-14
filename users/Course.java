@@ -1,8 +1,10 @@
+package users;
+
 import java.util.List;
 
 public class Course {
     private int ProfessorId;
-    private List<Integer> tasId;
+    private List<Integer> tasId;//TAs
     private List<Integer> studentsId;
     private String courseName;
     private List<Integer> postId;
@@ -59,7 +61,6 @@ public class Course {
     public void addAnnouncement(Integer announcementId) {
         announcementsId.add(announcementId);
     }
-
     public void deleteStudent(Integer stu) {
         for(int i = 0;i<studentsId.size();i++) {
             if(studentsId.get(i).equals(stu)) {

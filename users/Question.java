@@ -2,6 +2,7 @@ package users;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Question {
@@ -11,7 +12,7 @@ public class Question {
     private LocalDateTime postDate;
     private int senderId;
     private int category_id;
-    private List<Integer> answersId;
+    private List<Integer> answersId = new ArrayList<Integer>();
     public Question(int id, String title, int senderId, String content, LocalDateTime time, int category) {
         this.id = id;
         this.senderId = senderId;

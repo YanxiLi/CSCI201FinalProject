@@ -1,14 +1,16 @@
+package users;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Answer {
+public class Answer{
     private int id;
     private LocalDateTime time;
     private String content;
     private int user_answering_id;
     private int related_post_id;
     //private int related_announcement_id;
-    private List<Integer> followupId;
+    private List<Integer> followupId = new ArrayList<Integer>();
     public Answer(int id, LocalDateTime time, String content, int user_answering_id, int related_post_id){
         this.id = id;
         this.time = time;

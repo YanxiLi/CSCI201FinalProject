@@ -1,19 +1,26 @@
+package users;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Announcement {
+    private int id;
     private String title;
-    private List<Integer> followupId;
+    private List<Integer> followupId = new ArrayList<Integer>();
     private int senderId;
     private LocalDateTime postDate;
     private String content;
     private int courseId;
-    public Announcement(String title, int senderId, String content, int courseId, LocalDateTime time) {
+    public Announcement(int id, String title, int senderId, String content, int courseId, LocalDateTime time) {
+        this.id = id;
         this.courseId = courseId;
         this.senderId = senderId;
         this.title = title;
         this.content = content;
         this.postDate = time;
+    }
+    public int getId() {
+        return id;
     }
     public String getTitle() {
         return title;
@@ -42,5 +49,4 @@ public class Announcement {
     public int getCourseId() {
         return courseId;
     }
-
 }

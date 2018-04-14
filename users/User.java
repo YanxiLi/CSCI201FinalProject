@@ -5,21 +5,32 @@ import java.util.List;
 import java.time.LocalDateTime;
 
 abstract public class User {
-    private String username;
-    private String password;
-    private String email;
-    private String imageURL;
-    private LocalDateTime enrollDate;
-    private List<Integer> QuestionInvolvedId = new ArrayList<Integer>();
-    private List<Integer> AnswerInvolvedId = new ArrayList<Integer>();
-    private int Id;
-    private int credibilityPoint;
-    private List<String> preference = new ArrayList<String>();
-
+    protected String firstname;
+    protected String lastname;
+    protected String username;
+    protected String password;
+    protected String email;
+    protected String imageURL;
+    protected LocalDateTime enrollDate;
+    protected List<Integer> QuestionInvolvedId = new ArrayList<Integer>();
+    protected List<Integer> AnswerInvolvedId = new ArrayList<Integer>();
+    protected int Id;
+    protected int credibilityPoint;
+    protected List<Integer> preference = new ArrayList<Integer>();
+    /*
     public User(String username, int Id){
         this.username = username;
         this.Id = Id;
         this.enrollDate = LocalDateTime.now();
+    }*/
+
+    public String getFirstname(){ return this.firstname;}
+    public void setFirstname(String firstname){
+        this.firstname = firstname;
+    }
+    public String getLastname(){ return this.lastname;}
+    public void setLastname(String lastname){
+        this.lastname = lastname;
     }
     public String getUsername(){
         return this.username;
@@ -48,6 +59,9 @@ abstract public class User {
     public LocalDateTime getEnrollDate(){
         return this.enrollDate;
     }
+    public void setEnrollDate(LocalDateTime ldt){
+        this.enrollDate = ldt;
+    }
     public List<Integer> getQuestionInvolvedId() {
         return this.QuestionInvolvedId;
     }
@@ -69,15 +83,17 @@ abstract public class User {
     public int getId(){
         return this.Id;
     }
+    public void setId(int id){
+        this.Id = id;
+    }
     public int getCredibilityPoint(){
         return this.credibilityPoint;
     }
     public void setCredibilityPoint(int cp){
         this.credibilityPoint = cp;
     }
-    public List<String> getPreference(){
+    public List<Integer> getPreference(){
         return this.preference;
     }
     abstract public String type();
 }
-
