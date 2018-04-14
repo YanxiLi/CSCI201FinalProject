@@ -74,7 +74,6 @@ public class JdbcClass {
         }
         return userid;
     }
-
     public void registerStudent(String firstname, String lastname, String username, String password, String email)
             throws SQLException{
         int type = 1;
@@ -167,6 +166,48 @@ public class JdbcClass {
         }
         return name;
     }
+    public String getUserFirstName(int userid)
+            throws SQLException{
+        String firstname = "";
+        String queryCheck = "SELECT u.user_id, u.fname" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            firstname = rs.getString("fname");
+        }
+        return firstname;
+    }
+    public String getUserLastName(int userid)
+            throws SQLException{
+        String lastname = "";
+        String queryCheck = "SELECT u.user_id, u.lname" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            lastname = rs.getString("lname");
+        }
+        return lastname;
+    }
+    public String getUserImageURL(int userid)
+            throws SQLException{
+        String imageurl = "";
+        String queryCheck = "SELECT u.user_id, u.image_url" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            imageurl = rs.getString("image_url");
+        }
+        return imageurl;
+    }
     public int getCourseTakingId(int userid, int index)
             throws SQLException{
         String queryCheck = "SELECT cu.user_id, cu.course_id" +
@@ -225,14 +266,14 @@ public class JdbcClass {
         ps.setInt(1, courseid);
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
-            Announcement a = new Announcement(rs.getString("title"),rs.getInt("user_id"),
+            Announcement a = new Announcement(rs.getInt("announcement_id"),rs.getString("title"),rs.getInt("user_id"),
                     rs.getString("content"), courseid, rs.getTimestamp("time").toLocalDateTime());
             queryCheck = "SELECT c.announcement_commented_id, c.comment_id" +
                     " From Comment c" +
                     " Where c.announcement_commented_id=?";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
-            ps2.setInt(1, rs.getInt("announcement_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ps2.setInt(1, a.getId());
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 a.getFollowupId().add(rs2.getInt("comment_id"));
             }
@@ -304,7 +345,7 @@ public class JdbcClass {
     public List<Question> getQuestionListForCourse(int courseid)
             throws SQLException{
         List<Question> questionlist = new ArrayList<Question>();
-        String queryCheck = "SELECT p.course_id, p.question_id, p.title, p.content, p.time, p.user_asking_id, p.category_id" +
+        String queryCheck = "SELECT *" +
                 " From Question q, Post p" +
                 " Where p.course_id=?"
                 + " AND q.question_id=p.question_id";
@@ -313,14 +354,14 @@ public class JdbcClass {
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             Question q = new Question(rs.getInt("question_id"),rs.getString("title"),
-                    rs.getInt("user_asking_id"), rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
+                    rs.getInt("student_asking_id"), rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
             queryCheck = "SELECT p.question_id, a.answer_id" +
                     " From Post p, Answer a" +
                     " Where p.question_id=?"
-                    + " p.post_id=a.related_post_id";
+                    + " AND p.post_id=a.related_post_id";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
             ps2.setInt(1, rs.getInt("question_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 q.getanswersId().add(rs2.getInt("answer_id"));
             }
