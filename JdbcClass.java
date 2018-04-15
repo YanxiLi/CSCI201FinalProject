@@ -166,6 +166,20 @@ public class JdbcClass {
         }
         return name;
     }
+    public int getUserType(int userid)
+            throws SQLException{
+        String queryCheck = "SELECT u.user_id, u.type" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        int type = 0;
+        if(rs.next()) {
+            type = rs.getInt("type");
+        }
+        return  type;
+    }
     public String getUserFirstName(int userid)
             throws SQLException{
         String firstname = "";
@@ -388,7 +402,7 @@ public class JdbcClass {
             throws SQLException{
         String queryCheck = "SELECT *" +
                 " From Question q" +
-                " Where p.course_id=?";
+                " Where q.question_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, questionid);
         ResultSet rs = ps.executeQuery();
@@ -400,7 +414,7 @@ public class JdbcClass {
                 + " p.post_id=a.related_post_id";
         PreparedStatement ps2 = conn.prepareStatement(queryCheck);
         ps2.setInt(1, questionid);
-        ResultSet rs2 = ps.executeQuery();
+        ResultSet rs2 = ps2.executeQuery();
         while(rs2.next()){
             q.getanswersId().add(rs2.getInt("answer_id"));
         }
@@ -516,7 +530,7 @@ public class JdbcClass {
                     + " a.answer_id=c.answer_commented_id";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
             ps2.setInt(1, rs.getInt("answer_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 a.getFollowupId().add(rs2.getInt("comment_id"));
             }
