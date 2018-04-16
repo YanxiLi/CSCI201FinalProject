@@ -1,14 +1,15 @@
 package users;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Course {
     private int ProfessorId;
-    private List<Integer> tasId;//TAs
-    private List<Integer> studentsId;
+    private List<Integer> tasId = new ArrayList<Integer>();//TAs
+    private List<Integer> studentsId =  new ArrayList<Integer>();
     private String courseName;
-    private List<Integer> postId;
-    private List<Integer> announcementsId;
+    private List<Integer> postId = new ArrayList<Integer>();
+    private List<Integer> announcementsId = new ArrayList<Integer>();
     public Course(String courseName, int ProfessorId) {
         this.courseName = courseName;
         this.ProfessorId = ProfessorId;
