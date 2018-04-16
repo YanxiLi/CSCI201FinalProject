@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 
-@WebServlet(name = "ChooseCoursePage", urlPatterns = {"/ChooseCoursePage"})
+@WebServlet(name = "PostInCourse", urlPatterns = {"/PostInCourse"})
 public class PostInCourse extends HttpServlet {
     protected void service(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -28,17 +28,23 @@ public class PostInCourse extends HttpServlet {
             JdbcClass jdbc = (JdbcClass)session.getAttribute("jdbc");
             LocalDateTime time = LocalDateTime.now();
             session.setAttribute("posterror", "");
-            if(posttype == "announcement"){
+            if(posttype.equalsIgnoreCase("announcement")){
                 if(jdbc.ifUserCanPostAnnouncement(currentuserid,courseid)) {
-                    pageToForward = "coursepage.jsp";
+                    pageToForward = "/coursepage.jsp";
                     jdbc.postAnnouncementForCourse(title, content, time, currentuserid, courseid);
                 }else{
-                    pageToForward = "postincoursepage.jsp";
+                    pageToForward = "/postincoursepage.jsp";
                     session.setAttribute("posterror", "Sorry, you cannot post announcement.");
                 }
-            }else if(posttype == "question"){
-                pageToForward = "coursepage.jsp";
-                jdbc.postQuestionForCourse(title, content, time, currentuserid, courseid);//category hasn't been used
+            }else if(posttype.equalsIgnoreCase("question")){
+                if(title == null || title.equalsIgnoreCase("") ||
+                        content == null || content.equalsIgnoreCase("")){
+                    pageToForward = "/postincoursepage.jsp";
+                    session.setAttribute("posterror", "Sorry, you cannot leave any empty entry.");
+                }else{
+                    pageToForward = "/coursepage.jsp";
+                    jdbc.postQuestionForCourse(title, content, time, currentuserid, 1, courseid);//category hasn't been used
+                }
             }
             RequestDispatcher dispatch = getServletContext().getRequestDispatcher(pageToForward);
             dispatch.forward(request,response);

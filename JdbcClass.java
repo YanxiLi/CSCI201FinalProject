@@ -499,22 +499,27 @@ public class JdbcClass {
     }
     public void postCommentToAnnouncement(LocalDateTime time, int userid, String content, int announcementid)
             throws SQLException{
-        String queryCheck = "UPDATE Comment SET time=?, user_id=?, content=?, announcement_commented_id=?";
+        String queryCheck = "INSERT INTO Comment (time, user_id, content, answer_commented_id, announcement_commented_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setInt(2, userid);
         ps.setString(3, content);
-        ps.setInt(4, announcementid);
+        ps.setNull(4, java.sql.Types.INTEGER);
+        ps.setInt(5, announcementid);
         ps.executeUpdate();
+        System.out.println("hey");
     }
     public void postCommentToAnswer(LocalDateTime time, int userid, String content, int answerid)
             throws SQLException{
-        String queryCheck = "UPDATE Comment SET time=?, user_id=?, content=?, answer_commented_id=?";
+        String queryCheck = "INSERT INTO Comment (time, user_id, content, answer_commented_id, announcement_commented_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setInt(2, userid);
         ps.setString(3, content);
         ps.setInt(4, answerid);
+        ps.setNull(5, java.sql.Types.INTEGER);
         ps.executeUpdate();
     }
     public List<Comment> getCommentListToAnswer(int answerid)
@@ -551,7 +556,8 @@ public class JdbcClass {
     }
     public void postAnswerToQuestion(LocalDateTime time, String content, int userid, int postid)
             throws SQLException{
-        String queryCheck = "UPDATE Answer SET time=?, content=?, userid=?, postid=?";
+        String queryCheck = "INSERT INTO Answer (time, content, user_id, related_post_id)" +
+                "VALUES (?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setString(2, content);
