@@ -375,6 +375,16 @@ public class JdbcClass {
     }
     public void postQuestionForPublicPage(String title, String content, LocalDateTime time, int userid,
                                           int categoryid) throws SQLException{
+        String queryCheck = "INSERT INTO Question (title, content, time, student_asking_id, category_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setTimestamp(3, Timestamp.valueOf(time));
+        ps.setInt(4, userid);
+        ps.setInt(5, categoryid);
+        ps.executeUpdate();
+        /*
         String queryCheck = "UPDATE Question SET title=?, content=?, time=?, student_asking_id=?, category_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setString(1, title);
@@ -390,6 +400,7 @@ public class JdbcClass {
         PreparedStatement ps2 = conn.prepareStatement(queryCheck);
         ps2.setInt(1,questionid);
         ps2.executeUpdate();
+        */
     }
     public int getPostId(int questionid) throws SQLException{
         String queryCheck = "SELECT p.question_id, p.post_id" +
@@ -508,7 +519,6 @@ public class JdbcClass {
         ps.setNull(4, java.sql.Types.INTEGER);
         ps.setInt(5, announcementid);
         ps.executeUpdate();
-        System.out.println("hey");
     }
     public void postCommentToAnswer(LocalDateTime time, int userid, String content, int answerid)
             throws SQLException{
