@@ -124,38 +124,38 @@ public class JdbcClass {
         ps.setInt(8, type);
         ps.executeUpdate();
     }
-//    public List<String> getCourseTakingNameList(int userid)
-//            throws SQLException {
-//        List<String> coursenamelist = new ArrayList<String>();
-//        String queryCheck = "SELECT cu.user_id, c.prefix, c.num" +
-//                " From Course_user cu, Course c" +
-//                " Where cu.user_id=?"
-//                + " AND cu.course_id=c.course_id"
-//                + " AND cu.type=1";
-//        PreparedStatement ps = conn.prepareStatement(queryCheck);
-//        ps.setInt(1, userid);
-//        ResultSet rs = ps.executeQuery();
-//        while(rs.next()) {
-//            coursenamelist.add(rs.getString("prefix") + " " + rs.getString("num"));
-//        }
-//        return coursenamelist;
-//    }
-//    public List<String> getCourseTeachingNameList(int userid)
-//            throws SQLException {
-//        List<String> coursenamelist = new ArrayList<String>();
-//        String queryCheck = "SELECT cu.user_id, c.prefix, c.num" +
-//                " From Course_user cu, Course c" +
-//                " Where cu.user_id=?"
-//                + " AND cu.course_id=c.course_id"
-//                + " AND cu.type=2";
-//        PreparedStatement ps = conn.prepareStatement(queryCheck);
-//        ps.setInt(1, userid);
-//        ResultSet rs = ps.executeQuery();
-//        while(rs.next()) {
-//            coursenamelist.add(rs.getString("prefix") + " " + rs.getString("num"));
-//        }
-//        return coursenamelist;
-//    }
+    public List<String> getCourseTakingNameList(int userid)
+            throws SQLException {
+        List<String> coursenamelist = new ArrayList<String>();
+        String queryCheck = "SELECT cu.user_id, c.prefix, c.num" +
+                " From Course_user cu, Course c" +
+                " Where cu.user_id=?"
+                + " AND cu.course_id=c.course_id"
+                + " AND cu.type=1";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            coursenamelist.add(rs.getString("prefix") + " " + rs.getString("num"));
+        }
+        return coursenamelist;
+    }
+    public List<String> getCourseTeachingNameList(int userid)
+            throws SQLException {
+        List<String> coursenamelist = new ArrayList<String>();
+        String queryCheck = "SELECT cu.user_id, c.prefix, c.num" +
+                " From Course_user cu, Course c" +
+                " Where cu.user_id=?"
+                + " AND cu.course_id=c.course_id"
+                + " AND cu.type=2";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()) {
+            coursenamelist.add(rs.getString("prefix") + " " + rs.getString("num"));
+        }
+        return coursenamelist;
+    }
     public String getUserName(int userid)
             throws SQLException {
         String name = "";
@@ -169,6 +169,62 @@ public class JdbcClass {
             name = rs.getString("username");
         }
         return name;
+    }
+    public int getUserType(int userid)
+            throws SQLException{
+        String queryCheck = "SELECT u.user_id, u.type" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        int type = 0;
+        if(rs.next()) {
+            type = rs.getInt("type");
+        }
+        return  type;
+    }
+    public String getUserFirstName(int userid)
+            throws SQLException{
+        String firstname = "";
+        String queryCheck = "SELECT u.user_id, u.fname" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            firstname = rs.getString("fname");
+        }
+        return firstname;
+    }
+    public String getUserLastName(int userid)
+            throws SQLException{
+        String lastname = "";
+        String queryCheck = "SELECT u.user_id, u.lname" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            lastname = rs.getString("lname");
+        }
+        return lastname;
+    }
+    public String getUserImageURL(int userid)
+            throws SQLException{
+        String imageurl = "";
+        String queryCheck = "SELECT u.user_id, u.image_url" +
+                " From User u" +
+                " Where u.user_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()) {
+            imageurl = rs.getString("image_url");
+        }
+        return imageurl;
     }
     public int getCourseTakingId(int userid, int index)
             throws SQLException{
@@ -202,6 +258,22 @@ public class JdbcClass {
         int courseid = courselist.get(index);
         return courseid;
     }
+    public Boolean ifUserCanPostAnnouncement(int userid, int courseid)
+            throws SQLException{
+        String queryCheck = "SELECT cu.user_id, cu.course_id" +
+                " From Course_user cu" +
+                " Where cu.user_id=?"
+                + " AND cu.course_id=?" +
+                " AND cu.type=2";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, userid);
+        ps.setInt(2, courseid);
+        ResultSet rs = ps.executeQuery();
+        if(rs.next()){
+            return true;
+        }
+        return false;
+    }
     public List<Announcement> getAnnouncementListForCourse(int courseid)
             throws SQLException{
         List<Announcement> announcementlist = new ArrayList<Announcement>();
@@ -212,14 +284,14 @@ public class JdbcClass {
         ps.setInt(1, courseid);
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
-            Announcement a = new Announcement(rs.getString("title"),rs.getInt("user_id"),
+            Announcement a = new Announcement(rs.getInt("announcement_id"),rs.getString("title"),rs.getInt("user_id"),
                     rs.getString("content"), courseid, rs.getTimestamp("time").toLocalDateTime());
             queryCheck = "SELECT c.announcement_commented_id, c.comment_id" +
                     " From Comment c" +
                     " Where c.announcement_commented_id=?";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
-            ps2.setInt(1, rs.getInt("announcement_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ps2.setInt(1, a.getId());
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 a.getFollowupId().add(rs2.getInt("comment_id"));
             }
@@ -227,20 +299,36 @@ public class JdbcClass {
         }
         return announcementlist;
     }
+    public List<Integer> getUsersInCourse(int courseid)
+            throws SQLException{
+        List<Integer> userlist = new ArrayList<Integer>();
+        String queryCheck = "SELECT cu.course_id, cu.user_id" +
+                " From Course_user cu" +
+                " Where cu.course_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, courseid);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            userlist.add(rs.getInt("user_id"));
+        }
+        return userlist;
+    }
     public void postAnnouncementForCourse(String title, String content, LocalDateTime time,
                                           int userid, int courseid) throws SQLException{
-        String queryCheck = "UPDATE Announcement SET title=?, content=?, time=?, user_id=?, course_id=?";
+        String queryCheck = "INSERT INTO Announcement (time, user_id, course_id, content, title)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
-        ps.setString(1, title);
-        ps.setString(2, content);
-        ps.setTimestamp(3, Timestamp.valueOf(time));
-        ps.setInt(4, userid);
-        ps.setInt(5, courseid);
+        ps.setTimestamp(1, Timestamp.valueOf(time));
+        ps.setInt(2, userid);
+        ps.setInt(3, courseid);
+        ps.setString(4, content);
+        ps.setString(5, title);
         ps.executeUpdate();
     }
     public void postQuestionForCourse(String title, String content, LocalDateTime time, int userid,
                                       int categoryid, int courseid) throws SQLException{
-        String queryCheck = "UPDATE Question SET title=?, content=?, time=?, user_asking_id=?, category_id=?";
+        String queryCheck = "INSERT INTO Question (title, content, time, student_asking_id, category_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setString(1, title);
         ps.setString(2, content);
@@ -248,10 +336,42 @@ public class JdbcClass {
         ps.setInt(4, userid);
         ps.setInt(5, categoryid);
         ps.executeUpdate();
+
+        int questionid = 0;
+        try (
+                PreparedStatement statement = conn.prepareStatement(queryCheck,
+                        Statement.RETURN_GENERATED_KEYS);
+        ) {
+            statement.setString(1, title);
+            statement.setString(2, content);
+            statement.setTimestamp(3, Timestamp.valueOf(time));
+            statement.setInt(4, userid);
+            statement.setInt(5, categoryid);
+
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows == 0) {
+                throw new SQLException("Creating user failed, no rows affected.");
+            }
+
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    questionid = (int)generatedKeys.getLong(1);
+                }
+                else {
+                    throw new SQLException("Creating user failed, no ID obtained.");
+                }
+            }
+        }
+        /*
+        System.out.println("hey");
         ResultSet keys = ps.getGeneratedKeys();
+        System.out.println("hey");
         keys.next();
-        int questionid = keys.getInt(1);
-        queryCheck = "UPDATE Post SET question_id=?, course_id=?";
+        int questionid = keys.getInt(1);*/
+        System.out.println(questionid);
+        queryCheck = "INSERT INTO Post(question_id, course_id)" +
+                "VALUES(?, ?)";
         PreparedStatement ps2 = conn.prepareStatement(queryCheck);
         ps2.setInt(1,questionid);
         ps2.setInt(2,courseid);
@@ -259,7 +379,17 @@ public class JdbcClass {
     }
     public void postQuestionForPublicPage(String title, String content, LocalDateTime time, int userid,
                                           int categoryid) throws SQLException{
-        String queryCheck = "UPDATE Question SET title=?, content=?, time=?, user_asking_id=?, category_id=?";
+        String queryCheck = "INSERT INTO Question (title, content, time, student_asking_id, category_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setString(1, title);
+        ps.setString(2, content);
+        ps.setTimestamp(3, Timestamp.valueOf(time));
+        ps.setInt(4, userid);
+        ps.setInt(5, categoryid);
+        ps.executeUpdate();
+        /*
+        String queryCheck = "UPDATE Question SET title=?, content=?, time=?, student_asking_id=?, category_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setString(1, title);
         ps.setString(2, content);
@@ -274,6 +404,7 @@ public class JdbcClass {
         PreparedStatement ps2 = conn.prepareStatement(queryCheck);
         ps2.setInt(1,questionid);
         ps2.executeUpdate();
+        */
     }
     public int getPostId(int questionid) throws SQLException{
         String queryCheck = "SELECT p.question_id, p.post_id" +
@@ -291,7 +422,7 @@ public class JdbcClass {
     public List<Question> getQuestionListForCourse(int courseid)
             throws SQLException{
         List<Question> questionlist = new ArrayList<Question>();
-        String queryCheck = "SELECT p.course_id, p.question_id, p.title, p.content, p.time, p.user_asking_id, p.category_id" +
+        String queryCheck = "SELECT *" +
                 " From Question q, Post p" +
                 " Where p.course_id=?"
                 + " AND q.question_id=p.question_id";
@@ -300,18 +431,56 @@ public class JdbcClass {
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             Question q = new Question(rs.getInt("question_id"),rs.getString("title"),
-                    rs.getInt("user_asking_id"), rs.getString("content"), courseid, rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
+                    rs.getInt("student_asking_id"), rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
             queryCheck = "SELECT p.question_id, a.answer_id" +
                     " From Post p, Answer a" +
                     " Where p.question_id=?"
-                    + " p.post_id=a.related_post_id";
+                    + " AND p.post_id=a.related_post_id";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
             ps2.setInt(1, rs.getInt("question_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 q.getanswersId().add(rs2.getInt("answer_id"));
             }
             questionlist.add(q);
+        }
+        return questionlist;
+    }
+    public Question getQuestion(int questionid)
+            throws SQLException{
+        String queryCheck = "SELECT *" +
+                " From Question q" +
+                " Where q.question_id=?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1, questionid);
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        Question q = new Question(rs.getInt("question_id"),rs.getString("title"),
+                rs.getInt("student_asking_id"),rs.getString("content"), rs.getTimestamp("time").toLocalDateTime(), rs.getInt("category_id"));
+        queryCheck = "SELECT p.question_id, a.answer_id" +
+                " From Post p, Answer a" +
+                " Where p.question_id=?"
+                + " and p.post_id=a.related_post_id";
+        PreparedStatement ps2 = conn.prepareStatement(queryCheck);
+        ps2.setInt(1, questionid);
+        ResultSet rs2 = ps2.executeQuery();
+        while(rs2.next()){
+            q.getanswersId().add(rs2.getInt("answer_id"));
+        }
+        return q;
+    }
+    public List<Integer> getTenQuestions(int count)//start from 0
+            throws SQLException{
+        List<Integer> questionlist = new ArrayList<Integer>();
+        String queryCheck = "SELECT *" +
+                " From Question q" +
+                " limit ?,?";
+        PreparedStatement ps = conn.prepareStatement(queryCheck);
+        ps.setInt(1,(count*10+1));
+        ps.setInt(2,(count+1)*10);
+        ResultSet rs = ps.executeQuery();
+        while(rs.next()){
+            questionlist.add(rs.getInt("question_id"));
         }
         return questionlist;
     }
@@ -346,22 +515,26 @@ public class JdbcClass {
     }
     public void postCommentToAnnouncement(LocalDateTime time, int userid, String content, int announcementid)
             throws SQLException{
-        String queryCheck = "UPDATE Comment SET time=?, user_id=?, content=?, announcement_commented_id=?";
+        String queryCheck = "INSERT INTO Comment (time, user_id, content, answer_commented_id, announcement_commented_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setInt(2, userid);
         ps.setString(3, content);
-        ps.setInt(4, announcementid);
+        ps.setNull(4, java.sql.Types.INTEGER);
+        ps.setInt(5, announcementid);
         ps.executeUpdate();
     }
     public void postCommentToAnswer(LocalDateTime time, int userid, String content, int answerid)
             throws SQLException{
-        String queryCheck = "UPDATE Comment SET time=?, user_id=?, content=?, answer_commented_id=?";
+        String queryCheck = "INSERT INTO Comment (time, user_id, content, answer_commented_id, announcement_commented_id)" +
+                "VALUES (?, ?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setInt(2, userid);
         ps.setString(3, content);
         ps.setInt(4, answerid);
+        ps.setNull(5, java.sql.Types.INTEGER);
         ps.executeUpdate();
     }
     public List<Comment> getCommentListToAnswer(int answerid)
@@ -369,7 +542,7 @@ public class JdbcClass {
         List<Comment> commentlist = new ArrayList<Comment>();
         String queryCheck = "SELECT *" +
                 " From Comment c" +
-                " Where c.answer_comment_id=?";
+                " Where c.answer_commented_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, answerid);
         ResultSet rs = ps.executeQuery();
@@ -398,7 +571,8 @@ public class JdbcClass {
     }
     public void postAnswerToQuestion(LocalDateTime time, String content, int userid, int postid)
             throws SQLException{
-        String queryCheck = "UPDATE Answer SET time=?, content=?, userid=?, postid=?";
+        String queryCheck = "INSERT INTO Answer (time, content, user_id, related_post_id)" +
+                "VALUES (?, ?, ?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setTimestamp(1, Timestamp.valueOf(time));
         ps.setString(2, content);
@@ -412,20 +586,20 @@ public class JdbcClass {
         String queryCheck = "SELECT *" +
                 " From Answer a, Post p" +
                 " Where p.question_id=?"
-                + " AND a.related_post_id=p.question_id";
+                + " AND a.related_post_id=p.post_id";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, questionid);
         ResultSet rs = ps.executeQuery();
         while(rs.next()) {
             Answer a = new Answer(rs.getInt("answer_id"), rs.getTimestamp("time").toLocalDateTime(),
-                    rs.getString("content"), rs.getInt("user_answering_id"), rs.getInt("related_post_id"));
+                    rs.getString("content"), rs.getInt("user_id"), rs.getInt("related_post_id"));
             queryCheck = "SELECT a.answer_id, c.comment_id" +
                     " From Answer a, Comment c" +
                     " Where a.answer_id=?"
-                    + " a.answer_id=c.answer_commented_id";
+                    + " AND a.answer_id=c.answer_commented_id";
             PreparedStatement ps2 = conn.prepareStatement(queryCheck);
             ps2.setInt(1, rs.getInt("answer_id"));
-            ResultSet rs2 = ps.executeQuery();
+            ResultSet rs2 = ps2.executeQuery();
             while(rs2.next()) {
                 a.getFollowupId().add(rs2.getInt("comment_id"));
             }
@@ -530,9 +704,9 @@ public class JdbcClass {
     public List<String> getQuestionTitleForUser(int userid)
             throws SQLException{
         List<String> questionlist = new ArrayList<String>();
-        String queryCheck = "SELECT q.user_asking_id, q.title" +
+        String queryCheck = "SELECT q.student_asking_id, q.title" +
                 " From Question q" +
-                " Where q.user_asking_id=?";
+                " Where q.student_asking_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userid);
         ResultSet rs = ps.executeQuery();
@@ -545,9 +719,9 @@ public class JdbcClass {
     public List<Integer> getQuestionIdForUser(int userid)
             throws SQLException{
         List<Integer> questionlist = new ArrayList<Integer>();
-        String queryCheck = "SELECT q.user_asking_id, q.question_id" +
+        String queryCheck = "SELECT q.student_asking_id, q.question_id" +
                 " From Question q" +
-                " Where q.user_asking_id=?";
+                " Where q.student_asking_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userid);
         ResultSet rs = ps.executeQuery();
@@ -558,7 +732,8 @@ public class JdbcClass {
     }
     public void endorseQuestion(int userid, int questionid)
             throws SQLException{
-        String queryCheck = "UPDATE User_endorse_question SET user_id=?, answer_id=?";
+        String queryCheck = "INSERT INTO User_endorse_question (user_id, question_id)" +
+                "VALUES (?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userid);
         ps.setInt(2, questionid);
@@ -569,7 +744,7 @@ public class JdbcClass {
         String queryCheck = "SELECT ueq.user_id, ueq.question_id" +
                 " From User_endorse_question ueq" +
                 " Where ueq.user_id=?" +
-                " AND ueq.answer_id=?";
+                " AND ueq.question_id=?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userid);
         ps.setInt(2, questionid);
@@ -581,7 +756,8 @@ public class JdbcClass {
     }
     public void endorseAnswer(int userid, int answerid)
             throws SQLException{
-        String queryCheck = "UPDATE User_endorse_answer SET user_id=?, answer_id=?";
+        String queryCheck = "INSERT INTO User_endorse_answer (user_id, answer_id)" +
+                "VALUES (?, ?)";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userid);
         ps.setInt(2, answerid);
@@ -606,7 +782,6 @@ public class JdbcClass {
 
 
 
-
     //Additional SQL :
     public String getCourseNameFromCourseID(int courseID)
         throws SQLException {
@@ -624,8 +799,8 @@ public class JdbcClass {
     public List<Pair<String, String>> getQuestionsListForUesr(int userID)
         throws SQLException {
         String queryCheck = "SELECT Question.title, Question.content" +
-                "FROM Question" +
-                "WHERE  student_asking_id =?";
+                " FROM Question" +
+                " WHERE  Question.student_asking_id =?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userID);
         ResultSet rs = ps.executeQuery();
@@ -642,12 +817,12 @@ public class JdbcClass {
     public List<Pair<String, String>> getAnswersListForUser(int userID)
         throws SQLException {
         String queryCheck = "SELECT question.title, Answer.content" +
-                "FROM Answer" +
-                "JOIN Post" +
-                "ON Answer.related_post_id = Post.post_id" +
-                "JOIN Question" +
-                "ON Question.question_id = Post.question_id" +
-                "WHERE  user_id =?";
+                " FROM Answer" +
+                " JOIN Post" +
+                " ON Answer.related_post_id = Post.post_id" +
+                " JOIN Question" +
+                " ON Question.question_id = Post.question_id" +
+                " WHERE  user_id =?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
         ps.setInt(1, userID);
         ResultSet rs = ps.executeQuery();
@@ -661,17 +836,22 @@ public class JdbcClass {
         return answers;
     }
 
-    public String getUserImageURL(int userID)
-        throws SQLException {
-        String queryCheck = "SELECT User.image_url" +
+    public boolean getCorrespondingPassword(String email)
+            throws SQLException {
+        String queryCheck = "SELECT User._password" +
                 "FROM User" +
-                "WHERE User.user_id =?";
+                "WHERE User.email =?";
         PreparedStatement ps = conn.prepareStatement(queryCheck);
-        ps.setInt(1, userID);
+        ps.setString(1, email);
         ResultSet rs = ps.executeQuery();
-
         rs.next();
-        return rs.getString("image_url");
+        String pw = rs.getString("_password");
+        if(ps == null) {
+            return false;
+        }
+        return true;
     }
+
+
 }
 
